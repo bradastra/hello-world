@@ -1,16 +1,16 @@
 # Hello World in Python 🐍
 
-Welcome to my very first Python project on GitHub! This repository contains a simple program that prints out the classic "Hello, World!" message.
+## Description
+A simple set of Python scripts demonstrating basic programming concepts. It includes a classic "Hello, World!" program as well as an interactive script that asks about the weather.
 
-## What's Inside?
+## Usage
+1. Clone this repository.
+2. Navigate to the repository directory.
+3. Run `python hello.py` to execute the Hello World script.
+4. Run `python weather.py` to execute the Weather Inquiry script.
 
-As of now, the repository contains a single file: 
-- `hello.py`: This file holds the Python code that prints "Hello, World!" to the console.
+## Contribution
+Feel free to fork this repository and submit pull requests. Any contributions are welcome!
 
-## How to Run the Program
-
-1. Ensure you have Python installed on your machine. You can download it [here](https://www.python.org/downloads/).
-
-2. Clone this repository to your local machine:
-   ```bash
-   git clone https://github.com/bradastra/hello-world.git
+## License
+This project is open source and available under the [MIT License](LICENSE).

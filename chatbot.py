@@ -1,31 +1,39 @@
-import datetime
+import random
 
-def greeting():
-    """Generate a greeting based on the current hour."""
-    current_hour = datetime.datetime.now().hour
-    if 5 <= current_hour < 12:
-        return "Good Morning"
-    elif 12 <= current_hour < 17:
-        return "Good Afternoon"
+responses = {
+    "hello": [
+        "Hello! How can I assist you today?",
+        "Hi there! What can I do for you?",
+        "Hey! How's your day going?"
+    ],
+    "how are you": [
+        "I'm just a program, so I don't have feelings, but I'm functioning optimally!",
+        "Running at full capacity!",
+        "As good as a bunch of code can be!"
+    ],
+    "bye": [
+        "Goodbye! If you have more questions, just ask.",
+        "See you later!",
+        "Bye! Have a great day!"
+    ],
+    "what's your name": [
+        "I'm ChatGPT, a simple chatbot. Nice to meet you!",
+        "People call me ChatGPT. What about you?",
+        "I go by ChatGPT. What's your name?"
+    ]
+}
+
+print("Hello! Type 'bye' to exit.")
+while True:
+    user_input = input("You: ").lower()
+    if user_input in responses:
+        print("ChatGPT:", random.choice(responses[user_input]))
+    elif "my name is" in user_input:
+        name = user_input.split("is")[1].strip()
+        print(f"ChatGPT: Nice to meet you, {name}!")
+        responses["what's your name"].append(f"I remember now! You're {name}, right?")
+    elif user_input == 'bye':
+        print("ChatGPT: Goodbye! Have a great day!")
+        break
     else:
-        return "Good Evening"
-
-def main():
-    """Main function to execute the chatbot functionalities."""
-    user_name = input("Hi! What's your name? ")
-    print(f"{greeting()}, {user_name}! How can I assist you today?")
-
-    # This is a basic loop for the chatbot to respond until user decides to quit
-    while True:
-        user_input = input("You: ").lower()
-        
-        if user_input in ['bye', 'exit', 'quit']:
-            print("Chatbot: Goodbye! Have a nice day!")
-            break
-        elif "how are you" in user_input:
-            print("Chatbot: I'm just a program, so I don't have feelings, but I'm running as expected!")
-        else:
-            print("Chatbot: Sorry, I don't understand that. I'm still learning!")
-
-if __name__ == "__main__":
-    main()
+        print("ChatGPT: I'm sorry, I don't understand that.")

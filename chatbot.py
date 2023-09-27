@@ -1,39 +1,55 @@
 import random
 
-responses = {
-    "hello": [
-        "Hello! How can I assist you today?",
-        "Hi there! What can I do for you?",
-        "Hey! How's your day going?"
-    ],
-    "how are you": [
-        "I'm just a program, so I don't have feelings, but I'm functioning optimally!",
-        "Running at full capacity!",
-        "As good as a bunch of code can be!"
-    ],
-    "bye": [
-        "Goodbye! If you have more questions, just ask.",
-        "See you later!",
-        "Bye! Have a great day!"
-    ],
-    "what's your name": [
-        "I'm ChatGPT, a simple chatbot. Nice to meet you!",
-        "People call me ChatGPT. What about you?",
-        "I go by ChatGPT. What's your name?"
-    ]
-}
+def chatbot_response(text, user_data):
+    text = text.lower()
+    
+    # Bot greeting responses
+    greetings = ["hello", "hi", "hey", "sup", "yo"]
+    greeting_responses = ["Hello!", "Hi there!", "Hey!", "Hi! How can I help you?"]
 
-print("Hello! Type 'bye' to exit.")
-while True:
-    user_input = input("You: ").lower()
-    if user_input in responses:
-        print("ChatGPT:", random.choice(responses[user_input]))
-    elif "my name is" in user_input:
-        name = user_input.split("is")[1].strip()
-        print(f"ChatGPT: Nice to meet you, {name}!")
-        responses["what's your name"].append(f"I remember now! You're {name}, right?")
-    elif user_input == 'bye':
-        print("ChatGPT: Goodbye! Have a great day!")
-        break
+    # Farewells
+    farewells = ["bye", "goodbye", "see you", "later"]
+    farewell_responses = ["Goodbye!", "See you later!", "Take care!"]
+
+    # Questions about the bot
+    bot_questions = ["how are you", "are you real", "who are you"]
+    bot_responses = [
+        "I'm just a program, so I don't have feelings, but I'm functioning properly!",
+        "I'm virtual, not a real person.",
+        "I'm a simple chatbot, here to assist you!"
+    ]
+
+    # Check and respond
+    if text in greetings:
+        return random.choice(greeting_responses)
+    elif text in farewells:
+        return random.choice(farewell_responses)
+    elif any(bot_q in text for bot_q in bot_questions):
+        return random.choice(bot_responses)
+    elif "name" in text and "your" in text:
+        return "I'm just a chatbot, but you can call me ChatGPT!"
+    elif "my name is" in text:
+        user_data["name"] = text.split("is")[-1].strip()
+        return f"Nice to meet you, {user_data['name']}!"
+    elif "remember my name" in text:
+        if "name" in user_data:
+            return f"Of course, your name is {user_data['name']}!"
+        else:
+            return "I'm sorry, I don't recall your name. What is it?"
     else:
-        print("ChatGPT: I'm sorry, I don't understand that.")
+        return "I'm not sure how to respond to that. Can you rephrase?"
+
+def main():
+    user_data = {}  # Store user-specific data like name
+    print("Chatbot: Hello! If you want to exit, just say 'bye'.")
+    
+    while True:
+        user_input = input("You: ").strip()
+        if user_input.lower() in ["bye", "goodbye", "exit"]:
+            print("Chatbot: Goodbye! Have a great day!")
+            break
+        response = chatbot_response(user_input, user_data)
+        print(f"Chatbot: {response}")
+
+if __name__ == "__main__":
+    main()

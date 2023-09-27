@@ -1,51 +1,49 @@
 import random
 
-# Dictionary to store responses
-responses = {
-    "hello": ["Hi there!", "Hello!", "Hey! How can I assist you?"],
-    "how are you": ["I'm just a program, so I don't have feelings, but I'm running smoothly!", "As good as a chatbot can be!", "Operating at full capacity!"],
-    "default": ["I'm sorry, I don't understand that.", "Could you please rephrase that?", "I'm not sure how to respond to that."]
-}
+user_data = {}
+greetings_responses = ["Hello!", "Hi there!", "Hey!", "Hi!"]
+questions_responses = [
+    "Would you like to tell me more about your favorite things?",
+    "Do you have any hobbies?",
+    "What's a fun fact about you?"
+]
 
-# Dictionary to store user data for personalization
-user_data = {
-    "name": None,
-    "favorite_color": None,
-    "favorite_book": None,
-    "favorite_movie": None
-}
+def get_name():
+    name = input("First, please tell me your name: ")
+    user_data["name"] = name
 
-def respond_to_user(user_input, user_data):
-    if user_input in responses:
-        return random.choice(responses[user_input])
+def get_favorite_color():
+    color = input("What's your favorite color? ")
+    user_data["color"] = color
+
+def known_topics():
+    print("Here are some topics I understand:")
+    print("1. Greetings (e.g., hello, hi)")
+    print("2. Colors (e.g., What's your favorite color?)")
+    print("3. Exit (e.g., bye)")
+
+if not user_data.get("name"):
+    get_name()
+print(f"Hello, {user_data['name']}!")
+
+if not user_data.get("color"):
+    get_favorite_color()
+print(f"That's cool! {user_data['color']} is a nice color.")
+
+while True:
+    user_message = input(f"{user_data['name']}, type your message: ")
     
-    # Handle the user's name
-    if "my name is" in user_input:
-        user_name = user_input.split("is")[-1].strip()
-        user_data["name"] = user_name
-        return f"Nice to meet you, {user_name}!"
-    if user_data["name"] and ("remember my name" in user_input or "do you know me" in user_input):
-        return f"Of course, {user_data['name']}!"
-    
-    # Handle the user's favorite color
-    if "favorite color" in user_input:
-        user_data["favorite_color"] = user_input.split("is")[-1].strip()
-        return f"Got it! I'll remember your favorite color is {user_data['favorite_color']}."
-    if "remember my favorite color" in user_input:
-        return f"Your favorite color is {user_data['favorite_color']}!" if user_data["favorite_color"] else "You haven't told me your favorite color yet."
-    
-    # Default response
-    return random.choice(responses["default"])
-
-def main():
-    print("Hello! How can I assist you today?")
-    while True:
-        user_input = input().lower()
-        if user_input in ["exit", "quit", "bye"]:
-            print("Goodbye! Talk to you later.")
-            break
-        response = respond_to_user(user_input, user_data)
-        print(response)
-
-if __name__ == "__main__":
-    main()
+    if "hello" in user_message.lower():
+        print(random.choice(greetings_responses))
+    elif "color" in user_message.lower() or "favourite" in user_message.lower() or "favorite" in user_message.lower():
+        if user_data.get("color"):
+            print(f"Your favorite color is {user_data['color']}, right?")
+        else:
+            get_favorite_color()
+    elif "bye" in user_message.lower():
+        print("Goodbye!")
+        break
+    else:
+        print("I'm sorry, I didn't understand that.")
+        print(random.choice(questions_responses))
+        known_topics()

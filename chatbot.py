@@ -17,7 +17,7 @@ corpus = {
     "hello": greetings_responses,
     "color": ["What's your favorite color?", "Do you have a preferred color?", "Which color do you like?"],
     "bye": ["Goodbye!", "See you later!", "Farewell!"],
-    "calculate": ["Can you compute this for me?", "What's the result of this calculation?", "Solve this math problem for me."]
+    "compute": ["Can you compute this for me?", "Can you calculate this?", "Solve this math problem for me."]
 }
 
 def get_name():
@@ -35,7 +35,7 @@ def known_topics():
 
 def calculate_expression(expr):
     try:
-        return eval(expr)
+        return str(eval(expr))
     except:
         return "Sorry, I couldn't understand or evaluate that expression."
 
@@ -48,13 +48,13 @@ def respond_to_input(user_input):
     tfidf_vectorizer = TfidfVectorizer().fit_transform([user_input] + responses)
     cosine_vals = cosine_similarity(tfidf_vectorizer[0:1], tfidf_vectorizer[1:]).flatten()
     best_match_idx = cosine_vals.argmax()
-    response = responses[best_match_idx]
+    best_match_response = responses[best_match_idx]
 
-    if "calculate" in response:
+    if "compute" in best_match_response or "calculate" in best_match_response:
         expr = input("Please enter the mathematical expression: ")
         return calculate_expression(expr)
     else:
-        return response
+        return best_match_response
 
 if not user_data.get("name"):
     get_name()

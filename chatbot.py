@@ -16,7 +16,8 @@ questions_responses = [
 corpus = {
     "hello": greetings_responses,
     "color": ["What's your favorite color?", "Do you have a preferred color?", "Which color do you like?"],
-    "bye": ["Goodbye!", "See you later!", "Farewell!"]
+    "bye": ["Goodbye!", "See you later!", "Farewell!"],
+    "calculate": ["Can you compute this for me?", "What's the result of this calculation?", "Solve this math problem for me."]
 }
 
 def get_name():
@@ -32,18 +33,28 @@ def known_topics():
     for topic in corpus:
         print(f"- {topic.capitalize()}")
 
+def calculate_expression(expr):
+    try:
+        return eval(expr)
+    except:
+        return "Sorry, I couldn't understand or evaluate that expression."
+
 def respond_to_input(user_input):
     responses = []
     for key, value in corpus.items():
         for v in value:
             responses.append(v)
     
-    # Find the closest matching response in the corpus to user input
     tfidf_vectorizer = TfidfVectorizer().fit_transform([user_input] + responses)
     cosine_vals = cosine_similarity(tfidf_vectorizer[0:1], tfidf_vectorizer[1:]).flatten()
     best_match_idx = cosine_vals.argmax()
+    response = responses[best_match_idx]
 
-    return responses[best_match_idx]
+    if "calculate" in response:
+        expr = input("Please enter the mathematical expression: ")
+        return calculate_expression(expr)
+    else:
+        return response
 
 if not user_data.get("name"):
     get_name()
@@ -62,5 +73,3 @@ while True:
     else:
         response = respond_to_input(user_message)
         print(response)
-        if response not in corpus.values():
-            known_topics()

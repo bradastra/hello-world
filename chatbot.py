@@ -1,4 +1,9 @@
 import random
+import nltk
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+
+nltk.download('punkt')  # for tokenization
 
 user_data = {}
 greetings_responses = ["Hello!", "Hi there!", "Hey!", "Hi!"]
@@ -8,12 +13,10 @@ questions_responses = [
     "What's a fun fact about you?"
 ]
 
-topics_responses = {
-    "hello": lambda: print(random.choice(greetings_responses)),
-    "color": lambda: handle_color_topic(),
-    "favourite": lambda: handle_color_topic(),
-    "favorite": lambda: handle_color_topic(),
-    "bye": lambda: "exit"
+corpus = {
+    "hello": greetings_responses,
+    "color": ["What's your favorite color?", "Do you have a preferred color?", "Which color do you like?"],
+    "bye": ["Goodbye!", "See you later!", "Farewell!"]
 }
 
 def get_name():
@@ -26,28 +29,21 @@ def get_favorite_color():
 
 def known_topics():
     print("Here are some topics I understand:")
-    print("1. Greetings (e.g., hello, hi)")
-    print("2. Colors (e.g., What's your favorite color?)")
-    print("3. Exit (e.g., bye)")
+    for topic in corpus:
+        print(f"- {topic.capitalize()}")
 
-def handle_color_topic():
-    if user_data.get("color"):
-        print(f"Your favorite color is {user_data['color']}, right?")
-    else:
-        get_favorite_color()
+def respond_to_input(user_input):
+    responses = []
+    for key, value in corpus.items():
+        for v in value:
+            responses.append(v)
+    
+    # Find the closest matching response in the corpus to user input
+    tfidf_vectorizer = TfidfVectorizer().fit_transform([user_input] + responses)
+    cosine_vals = cosine_similarity(tfidf_vectorizer[0:1], tfidf_vectorizer[1:]).flatten()
+    best_match_idx = cosine_vals.argmax()
 
-def handle_input(user_message):
-    for keyword, action in topics_responses.items():
-        if keyword in user_message.lower():
-            result = action()
-            if result == "exit":
-                print("Goodbye!")
-                return False
-            return True
-    print("I'm sorry, I didn't understand that.")
-    print(random.choice(questions_responses))
-    known_topics()
-    return True
+    return responses[best_match_idx]
 
 if not user_data.get("name"):
     get_name()
@@ -57,7 +53,14 @@ if not user_data.get("color"):
     get_favorite_color()
 print(f"That's cool! {user_data['color']} is a nice color.")
 
-keep_going = True
-while keep_going:
+while True:
     user_message = input(f"{user_data['name']}, type your message: ")
-    keep_going = handle_input(user_message)
+
+    if "bye" in user_message.lower():
+        print("Goodbye!")
+        break
+    else:
+        response = respond_to_input(user_message)
+        print(response)
+        if response not in corpus.values():
+            known_topics()
